@@ -1,5 +1,5 @@
+require('dotenv').config();
 import { Module } from '@nestjs/common';
-import { databaseProviders } from './database.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { Idea } from 'src/idea/entities/idea.entity';
@@ -7,11 +7,11 @@ import { Idea } from 'src/idea/entities/idea.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: process.env.DATABASE_HOST,
       port: 3306,
-      username: 'root',
-      password: '1234',
-      database: 'bazzar',
+      username: process.env.DATABASE_NAME,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_DB,
       synchronize: true, // 이 옵션을 true로 설정
       entities: [User, Idea],
     }),
