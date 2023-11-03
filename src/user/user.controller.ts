@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ConflictException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -17,7 +18,10 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('/register')
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+    if (await this.userService.isUserIdExist(createUserDto.userId)) {
+      throw new ConflictException('UserId already exists');
+    }
     return await this.userService.create(createUserDto);
   }
 
