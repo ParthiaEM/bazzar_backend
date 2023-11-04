@@ -11,20 +11,18 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
+
   async isUserIdExist(userId): Promise<Boolean> {
     const users = await this.userRepository.findOne({ where: { userId } });
     return !!users;
   }
+
   async create(user: User): Promise<User> {
     return await this.userRepository.save(user);
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(userUniqueId: number): Promise<User> {
+    return await this.userRepository.findOne({ where: { userUniqueId } });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

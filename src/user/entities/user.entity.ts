@@ -1,8 +1,8 @@
-import { Entity, Column, Generated, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class User {
-  @Generated()
+  @PrimaryGeneratedColumn()
   userUniqueId: number;
 
   @PrimaryColumn()
