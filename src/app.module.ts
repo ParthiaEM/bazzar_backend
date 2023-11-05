@@ -4,8 +4,6 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { IdeaModule } from './idea/idea.module';
 import { DatabaseModule } from './database/database.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-
 @Module({
   imports: [UserModule, IdeaModule, DatabaseModule],
   controllers: [AppController],
