@@ -12,6 +12,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { LoginUserDTO } from './dto/login-user.dto';
+import { access } from 'fs';
+import { json } from 'stream/consumers';
 
 @Controller('user')
 export class UserController {
@@ -27,8 +29,12 @@ export class UserController {
 
   @Post('/login')
   async loginUser(@Body() loginuserDTO: LoginUserDTO) {
-    return await this.userService.login(loginuserDTO);
+    const accessToken = await this.userService.login(loginuserDTO);
+    if (accessToken) return { login: true, accessToken };
+
+    return { login: false };
   }
+
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<User> {
     return await this.userService.findOne(+id);

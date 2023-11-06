@@ -5,10 +5,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDTO } from './dto/login-user.dto';
-import { log } from 'console';
+import { JwtService } from '@nestjs/jwt';
+
 @Injectable()
 export class UserService {
   constructor(
+    private readonly jwtService: JwtService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
@@ -38,14 +40,17 @@ export class UserService {
   async login(loginuserDTO: LoginUserDTO) {
     const userId = loginuserDTO.userId;
     const userData = await this.userRepository.findOne({ where: { userId } });
-    if (!userData) return new NotFoundException('userId not found');
+
+    if (!userData) return;
     const isPasswordMatch = await bcrypt.compare(
       loginuserDTO.userPassword,
-      (await userData).userPassword,
+      userData.userPassword,
     );
-    if (isPasswordMatch) return userData;
-    return '실패';
-
-    return loginuserDTO;
+    if (isPasswordMatch) {
+      const payload = { sub: userData.userUniqueId };
+      const accessToken = this.jwtService.sign(payload);
+      return accessToken;
+    }
+    return false;
   }
 }
