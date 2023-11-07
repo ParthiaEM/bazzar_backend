@@ -47,7 +47,6 @@ export class UserController {
     @Res() res: Response,
   ) {
     const authorized = await this.userService.login(loginuserDTO);
-    console.log(authorized);
     if (authorized) {
       const cookie = this.authService.getCookieWithJwtToken(authorized);
       res.setHeader('Set-Cookie', cookie);
@@ -70,7 +69,6 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
     @Req() req: Request,
   ) {
-    console.log(req['user']);
     return this.userService.update(+id, updateUserDto);
   }
 }
