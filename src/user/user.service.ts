@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Req } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,7 +10,6 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class UserService {
   constructor(
-    private readonly jwtService: JwtService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
@@ -20,36 +19,34 @@ export class UserService {
     return !!users;
   }
 
-  async create(user: User): Promise<User> {
+  async create(user: User) {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(user.userPassword, saltRounds);
     user.userPassword = hashedPassword;
+
     return await this.userRepository.save(user);
   }
 
   async findOne(userUniqueId: number): Promise<User> {
-    //JWT부분
     return await this.userRepository.findOne({ where: { userUniqueId } });
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    //JWT부분
     return await this.userRepository.update(id, updateUserDto);
   }
 
   async login(loginuserDTO: LoginUserDTO) {
     const userId = loginuserDTO.userId;
     const userData = await this.userRepository.findOne({ where: { userId } });
-
+    const { userUniqueId, userPassword, lux } = userData;
     if (!userData) return;
     const isPasswordMatch = await bcrypt.compare(
       loginuserDTO.userPassword,
-      userData.userPassword,
+      userPassword,
     );
     if (isPasswordMatch) {
-      const payload = { sub: userData.userUniqueId };
-      const accessToken = this.jwtService.sign(payload);
-      return accessToken;
+      const authorizedData = { userUniqueId, userId, lux };
+      return authorizedData;
     }
     return false;
   }
