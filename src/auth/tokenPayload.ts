@@ -1,0 +1,3 @@
+interface TokenPayload {
+  userUniqueId: number;
+}
