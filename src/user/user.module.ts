@@ -15,6 +15,7 @@ import { JwtStrategy } from 'src/auth/jwt.strategy';
   imports: [
     PassportModule,
     TypeOrmModule.forFeature([User]),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -27,7 +28,7 @@ import { JwtStrategy } from 'src/auth/jwt.strategy';
     }),
   ],
   controllers: [UserController],
-  exports: [UserService],
+  exports: [UserService, JwtModule, PassportModule],
   providers: [
     UserService,
     AuthService,

@@ -18,13 +18,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { LoginUserDTO } from './dto/login-user.dto';
-import { Response, request } from 'express';
+import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
-import RequestWithUser from '../auth/requestWithuser.interface';
 import JwtAuthenticationGuard from 'src/auth/jwt.auth.guard';
+import { JwtService } from '@nestjs/jwt';
 @Controller('user')
 export class UserController {
   constructor(
+    private readonly jwtService: JwtService,
     private readonly userService: UserService,
     private readonly authService: AuthService,
   ) {}
@@ -42,7 +43,7 @@ export class UserController {
   @Post('/login')
   async loginUser(
     @Body() loginuserDTO: LoginUserDTO,
-    @Req() RequestWithUser,
+    @Req() req,
     @Res() res: Response,
   ) {
     const authorized = await this.userService.login(loginuserDTO);
