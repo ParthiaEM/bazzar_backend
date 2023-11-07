@@ -18,8 +18,10 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { LoginUserDTO } from './dto/login-user.dto';
-import { Response } from 'express';
-import { LocalAuthGuard } from 'src/auth/auth.guard';
+import { Response, request } from 'express';
+import { AuthGuard } from '@nestjs/passport';
+import RequestWithUser from '../auth/requestWithuser.interface';
+import JwtAuthenticationGuard from 'src/auth/jwt.auth.guard';
 @Controller('user')
 export class UserController {
   constructor(
@@ -35,28 +37,27 @@ export class UserController {
     await this.userService.create(createUserDto);
     return res.status(HttpStatus.CREATED).json({ created: true });
   }
+
   @HttpCode(200)
-  @UseGuards(LocalAuthGuard)
   @Post('/login')
   async loginUser(
     @Body() loginuserDTO: LoginUserDTO,
-    @Req() req,
+    @Req() RequestWithUser,
     @Res() res: Response,
   ) {
-    const { user } = req;
     const authorized = await this.userService.login(loginuserDTO);
+    console.log(authorized);
     if (authorized) {
-      const cookie = this.authService.getCookieWithJwtToken(user.userUniqueId);
-      req.session.userData = authorized;
+      const cookie = this.authService.getCookieWithJwtToken(authorized);
       res.setHeader('Set-Cookie', cookie);
-      user.userPassword = undefined;
 
-      return res.send(user);
+      return res.json({ accessToken: cookie });
     }
 
     return res.status(HttpStatus.OK).json({ login: 'failed' });
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<User> {
     return await this.userService.findOne(+id);
