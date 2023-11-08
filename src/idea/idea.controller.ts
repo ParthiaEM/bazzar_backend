@@ -7,18 +7,26 @@ import {
   Param,
   Delete,
   HttpCode,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { IdeaService } from './idea.service';
 import { CreateIdeaDto } from './dto/create-idea.dto';
 import { UpdateIdeaDto } from './dto/update-idea.dto';
-import { Idea } from './entities/idea.entity';
+import RequestWithUser from 'src/auth/requestWithuser.interface';
+import JwtAuthenticationGuard from 'src/auth/jwt.auth.guard';
 
 @Controller('idea')
 export class IdeaController {
   constructor(private readonly ideaService: IdeaService) {}
 
+  @UseGuards(JwtAuthenticationGuard)
   @Post()
-  create(@Body() createIdeaDto: CreateIdeaDto) {
+  create(
+    @Body() createIdeaDto: CreateIdeaDto,
+    @Req() request: RequestWithUser,
+  ) {
+    createIdeaDto.postedUserId = request.user.userUniqueId;
     return this.ideaService.create(createIdeaDto);
   }
   @HttpCode(200)

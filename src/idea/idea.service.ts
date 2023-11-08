@@ -10,8 +10,13 @@ export class IdeaService {
     @InjectRepository(Idea)
     private readonly IdeaRepository: Repository<Idea>,
   ) {}
-  async create(createIdeaDto: CreateIdeaDto) {
-    return 'This action adds a new idea';
+
+  create(idea: Idea) {
+    idea.isTrading = false;
+    idea.purchasedUserId = 0;
+    idea.bidUserId = 0;
+    console.log(idea);
+    return this.IdeaRepository.save(idea);
   }
 
   async findAll() {
