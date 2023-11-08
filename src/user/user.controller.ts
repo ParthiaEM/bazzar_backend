@@ -19,7 +19,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { LoginUserDTO } from './dto/login-user.dto';
 import { Response } from 'express';
-import { AuthGuard } from '@nestjs/passport';
+import RequestWithUser from '../auth/requestWithuser.interface';
 import JwtAuthenticationGuard from 'src/auth/jwt.auth.guard';
 import { JwtService } from '@nestjs/jwt';
 @Controller('user')
@@ -70,5 +70,13 @@ export class UserController {
     @Req() req: Request,
   ) {
     return this.userService.update(+id, updateUserDto);
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get()
+  authenticate(@Req() request: RequestWithUser) {
+    const user = request.user;
+    user.userPassword = undefined;
+    return user;
   }
 }
