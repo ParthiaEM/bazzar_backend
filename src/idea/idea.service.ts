@@ -1,15 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { CreateIdeaDto } from './dto/create-idea.dto';
 import { UpdateIdeaDto } from './dto/update-idea.dto';
-
+import { InjectRepository } from '@nestjs/typeorm';
+import { Idea } from './entities/idea.entity';
+import { Repository } from 'typeorm';
 @Injectable()
 export class IdeaService {
-  create(createIdeaDto: CreateIdeaDto) {
+  constructor(
+    @InjectRepository(Idea)
+    private readonly IdeaRepository: Repository<Idea>,
+  ) {}
+  async create(createIdeaDto: CreateIdeaDto) {
     return 'This action adds a new idea';
   }
 
-  findAll() {
-    return `This action returns all idea`;
+  async findAll() {
+    return await this.IdeaRepository.find();
   }
 
   findOne(id: number) {

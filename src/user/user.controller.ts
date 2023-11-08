@@ -18,7 +18,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { LoginUserDTO } from './dto/login-user.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import RequestWithUser from '../auth/requestWithuser.interface';
 import JwtAuthenticationGuard from 'src/auth/jwt.auth.guard';
 import { JwtService } from '@nestjs/jwt';
@@ -43,7 +43,7 @@ export class UserController {
   @Post('/login')
   async loginUser(
     @Body() loginuserDTO: LoginUserDTO,
-    @Req() req,
+    @Req() req: Request,
     @Res() res: Response,
   ) {
     const authorized = await this.userService.login(loginuserDTO);
@@ -65,12 +65,9 @@ export class UserController {
     return user;
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Put(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
-    @Req() req: Request,
-  ) {
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 

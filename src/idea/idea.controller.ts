@@ -1,7 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpCode,
+} from '@nestjs/common';
 import { IdeaService } from './idea.service';
 import { CreateIdeaDto } from './dto/create-idea.dto';
 import { UpdateIdeaDto } from './dto/update-idea.dto';
+import { Idea } from './entities/idea.entity';
 
 @Controller('idea')
 export class IdeaController {
@@ -11,10 +21,11 @@ export class IdeaController {
   create(@Body() createIdeaDto: CreateIdeaDto) {
     return this.ideaService.create(createIdeaDto);
   }
-
+  @HttpCode(200)
   @Get()
   findAll() {
-    return this.ideaService.findAll();
+    const result = this.ideaService.findAll();
+    return result;
   }
 
   @Get(':id')
