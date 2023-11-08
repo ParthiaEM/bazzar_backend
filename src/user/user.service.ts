@@ -1,11 +1,16 @@
-import { Injectable, NotFoundException, Req } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+  Req,
+} from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDTO } from './dto/login-user.dto';
-import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
@@ -28,7 +33,9 @@ export class UserService {
   }
 
   async findOne(userUniqueId: number): Promise<User> {
-    return await this.userRepository.findOne({ where: { userUniqueId } });
+    const user = await this.userRepository.findOne({ where: { userUniqueId } });
+    if (user) return user;
+    throw new HttpException('사용자 없음', HttpStatus.NOT_FOUND);
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
@@ -38,16 +45,20 @@ export class UserService {
   async login(loginuserDTO: LoginUserDTO) {
     const userId = loginuserDTO.userId;
     const userData = await this.userRepository.findOne({ where: { userId } });
-    const { userUniqueId, userPassword, lux } = userData;
+    const { userPassword } = userData;
     if (!userData) return;
     const isPasswordMatch = await bcrypt.compare(
       loginuserDTO.userPassword,
       userPassword,
     );
     if (isPasswordMatch) {
-      const authorizedData = { userUniqueId, userId, lux };
-      return authorizedData;
+      const { userUniqueId } = userData;
+      return userUniqueId;
     }
     return false;
+  }
+
+  async getById(userUniqueId: number) {
+    return await this.userRepository.findOne({ where: { userUniqueId } });
   }
 }

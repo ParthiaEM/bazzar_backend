@@ -1,26 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
-
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { TokenPayload } from './tokenPayload.interface';
+import { UserService } from 'src/user/user.service';
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+    private readonly userService: UserService,
+  ) {}
+
+  public getCookieWithJwtToken(userUniqueId: number) {
+    const payload: TokenPayload = { userUniqueId };
+    const token = this.jwtService.sign(payload, {
+      expiresIn: '1d',
+      secret: process.env.SECRET_KEY,
+    });
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+      '24h',
+    )}`;
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async validateUser(payload: any) {
+    // payload에서 필요한 정보를 추출하여 특정 조건을 확인하고 사용자를 반환합니다.
+    const user = await this.userService.findOne(payload.userUniqueId);
+    if (user) {
+      return user;
+    }
+    return null;
   }
 }

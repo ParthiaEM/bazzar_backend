@@ -1,27 +1,29 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  UseGuards,
-  Param,
+  Controller,
+  HttpCode,
+  Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport'; // AuthGuard import
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+import { LocalAuthGuard } from './auth.guard';
+import RequestWithUser from './requestWithuser.interface';
 
-@Controller('auth')
+@Controller('authentication')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Post('register')
+  async register(@Body() registrationData: CreateUserDto) {
+    return;
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
+  @HttpCode(200)
+  @UseGuards(LocalAuthGuard)
+  @Post('log-in')
+  async logIn(@Req() request: RequestWithUser) {
+    const user = request.user;
+    user.userPassword = undefined;
+    return user;
   }
 }

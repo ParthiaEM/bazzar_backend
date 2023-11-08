@@ -1,11 +1,13 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as express from 'express';
-
+import * as cookieParser from 'cookie-parser';
 async function bootstrap() {
+  dotenv.config();
   const app = await NestFactory.create(AppModule);
   app.enableCors();
-  app.use(express.static('public'));
+  app.use(cookieParser());
   await app.listen(3000);
 }
 bootstrap();

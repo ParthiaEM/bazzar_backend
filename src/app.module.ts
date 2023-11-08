@@ -1,14 +1,16 @@
-require('dotenv').config();
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import * as dotenv from 'dotenv';
+dotenv.config();
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { IdeaModule } from './idea/idea.module';
 import { DatabaseModule } from './database/database.module';
-import { SessionModule } from './auth/session.module';
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [UserModule, IdeaModule, DatabaseModule, SessionModule],
+  imports: [UserModule, AuthModule, IdeaModule, DatabaseModule, ConfigModule],
   controllers: [AppController],
   providers: [AppService],
 })
