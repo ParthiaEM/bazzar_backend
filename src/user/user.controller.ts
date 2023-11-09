@@ -51,7 +51,7 @@ export class UserController {
       const cookie = this.authService.getCookieWithJwtToken(authorized);
       res.setHeader('Set-Cookie', cookie);
 
-      return res.json({ accessToken: cookie });
+      return res.json({ login: 'success' });
     }
 
     return res.status(HttpStatus.OK).json({ login: 'failed' });
