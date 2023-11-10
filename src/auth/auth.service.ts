@@ -17,7 +17,7 @@ export class AuthService {
       expiresIn: '1d',
       secret: process.env.SECRET_KEY,
     });
-    return `Authentication=${token}`;
+    return `Authentication=${token}; Max-Age=${this.configService.get('24h')}`;
   }
 
   async validateUser(payload: any) {

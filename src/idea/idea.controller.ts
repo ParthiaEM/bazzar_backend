@@ -9,6 +9,7 @@ import {
   HttpCode,
   Req,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { IdeaService } from './idea.service';
 import { CreateIdeaDto } from './dto/create-idea.dto';
@@ -41,9 +42,15 @@ export class IdeaController {
     return this.ideaService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateIdeaDto: UpdateIdeaDto) {
-    return this.ideaService.update(+id, updateIdeaDto);
+  @UseGuards(JwtAuthenticationGuard)
+  @Put(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateIdeaDto: UpdateIdeaDto,
+    @Req() request: RequestWithUser,
+  ) {
+    console.log(request.user);
+    return this.ideaService.update(+id, updateIdeaDto, request.user);
   }
 
   @Delete(':id')
