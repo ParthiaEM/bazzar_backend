@@ -3,19 +3,20 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   HttpCode,
   Req,
   UseGuards,
   Put,
+  Res,
 } from '@nestjs/common';
 import { IdeaService } from './idea.service';
 import { CreateIdeaDto } from './dto/create-idea.dto';
 import { UpdateIdeaDto } from './dto/update-idea.dto';
 import RequestWithUser from 'src/auth/requestWithuser.interface';
 import JwtAuthenticationGuard from 'src/auth/jwt.auth.guard';
+import { Response } from 'express';
 
 @Controller('idea')
 export class IdeaController {
@@ -26,9 +27,11 @@ export class IdeaController {
   create(
     @Body() createIdeaDto: CreateIdeaDto,
     @Req() request: RequestWithUser,
+    @Res() res: Response,
   ) {
-    createIdeaDto.postedUserId = request.user.userUniqueId;
-    return this.ideaService.create(createIdeaDto);
+    createIdeaDto.ideaInfo.postedUserId = request.user.userUniqueId;
+    this.ideaService.create(createIdeaDto.ideaInfo);
+    return res.json({ create: 'success' });
   }
   @HttpCode(200)
   @Get()
@@ -49,8 +52,8 @@ export class IdeaController {
     @Body() updateIdeaDto: UpdateIdeaDto,
     @Req() request: RequestWithUser,
   ) {
-    console.log(request.user);
-    return this.ideaService.update(+id, updateIdeaDto, request.user);
+    return console.log(request.user);
+    //return this.ideaService.update(+id, updateIdeaDto, request.user);
   }
 
   @Delete(':id')

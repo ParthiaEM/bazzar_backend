@@ -14,12 +14,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request) => request.query.token,
+        (request) => request.body.token,
       ]),
       secretOrKey: process.env.SECRET_KEY,
     });
   }
   async validate(payload: any) {
-    console.log(payload.userUniqueId);
     const user = this.userService.findOne(payload.userUniqueId);
     if (!user) {
       throw new UnauthorizedException();

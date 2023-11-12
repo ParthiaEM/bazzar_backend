@@ -13,19 +13,18 @@ export class Idea {
 
   @Column({ length: 1000 })
   ideaDetail: string;
-
   @Column()
   price: number;
 
-  @Column()
+  @Column({ default: false })
   isTrading: boolean;
 
-  @Column()
+  @Column({ default: 0 })
   postedUserId: number;
 
-  @Column()
+  @Column({ default: 0 })
   purchasedUserId: number;
 
-  @Column()
+  @Column({ default: 0 })
   bidUserId: number;
 }

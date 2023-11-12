@@ -13,10 +13,6 @@ export class IdeaService {
   ) {}
 
   create(idea: Idea) {
-    idea.isTrading = false;
-    idea.purchasedUserId = 0;
-    idea.bidUserId = 0;
-    console.log(idea);
     return this.IdeaRepository.save(idea);
   }
 
