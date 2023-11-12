@@ -2,12 +2,9 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Request } from 'express';
 import { UserService } from '../user/user.service';
-import { TokenPayload } from './tokenPayload.interface';
-
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -16,14 +13,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (request: Request) => {
-          return request?.cookies?.Authentication;
-        },
+        (request) => request.query.token,
       ]),
       secretOrKey: process.env.SECRET_KEY,
     });
   }
-  async validate(payload: TokenPayload) {
-    return this.userService.findOne(payload.userUniqueId);
+  async validate(payload: any) {
+    console.log(payload.userUniqueId);
+    const user = this.userService.findOne(payload.userUniqueId);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    return user;
   }
 }

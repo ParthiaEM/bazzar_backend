@@ -48,17 +48,16 @@ export class UserController {
   ) {
     const authorized = await this.userService.login(loginuserDTO);
     if (authorized) {
-      const cookie = this.authService.getCookieWithJwtToken(authorized);
-      res.setHeader('Set-Cookie', cookie);
+      const accessToken = this.authService.getCookieWithJwtToken(authorized);
 
-      return res.json({ login: 'success' });
+      return res.json({ login: 'success', accessToken });
     }
 
-    return res.status(HttpStatus.OK).json({ login: 'failed' });
+    return res.json({ login: 'failed' });
   }
 
-  @UseGuards(JwtAuthenticationGuard)
   @Get(':id')
+  @UseGuards(JwtAuthenticationGuard)
   async findOne(@Param('id') id: number): Promise<User> {
     const user = await this.userService.findOne(+id);
     user.userPassword = undefined;
