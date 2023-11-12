@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateIdeaDto } from './dto/create-idea.dto';
 import { UpdateIdeaDto } from './dto/update-idea.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Idea } from './entities/idea.entity';

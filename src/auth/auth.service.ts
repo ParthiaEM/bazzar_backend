@@ -14,7 +14,7 @@ export class AuthService {
   public getCookieWithJwtToken(userUniqueId: number) {
     const payload: TokenPayload = { userUniqueId };
     const token = this.jwtService.sign(payload, {
-      expiresIn: '1d',
+      expiresIn: '12h',
       secret: process.env.SECRET_KEY,
     });
 
