@@ -52,8 +52,8 @@ export class UserService {
       userPassword,
     );
     if (isPasswordMatch) {
-      const { userUniqueId } = userData;
-      return userUniqueId;
+      userData.userPassword = undefined;
+      return userData;
     }
     return false;
   }

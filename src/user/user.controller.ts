@@ -41,16 +41,14 @@ export class UserController {
 
   @HttpCode(200)
   @Post('/login')
-  async loginUser(
-    @Body() loginuserDTO: LoginUserDTO,
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
+  async loginUser(@Body() loginuserDTO: LoginUserDTO, @Res() res: Response) {
     const authorized = await this.userService.login(loginuserDTO);
     if (authorized) {
-      const accessToken = this.authService.getCookieWithJwtToken(authorized);
+      const accessToken = this.authService.getCookieWithJwtToken(
+        authorized.userUniqueId,
+      );
 
-      return res.json({ login: 'success', accessToken });
+      return res.json({ login: 'success', userInfo: authorized, accessToken });
     }
 
     return res.json({ login: 'failed' });
