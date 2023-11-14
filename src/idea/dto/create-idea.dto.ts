@@ -1,11 +1,27 @@
 export class CreateIdeaDto {
-  ideaId: number;
-  ideaField: string;
-  ideaName: string;
-  ideaDetail: string;
-  price: number;
-  isTrading: boolean;
-  postedUserId: number;
-  purchasedUserId: number;
-  bidUserId: number;
+  token: string;
+  ideaInfo: {
+    ideaId: number;
+    ideaField: string;
+    ideaName: string;
+    ideaDetail: string;
+    price: number;
+    isTrading: boolean;
+    postedUserId: number;
+    purchasedUserId: number;
+    bidUserId: number;
+  };
+  constructor() {
+    this.ideaInfo = {
+      ideaId: 0,
+      ideaField: '',
+      ideaName: '',
+      ideaDetail: '',
+      price: 0,
+      isTrading: false,
+      postedUserId: 0,
+      purchasedUserId: 0,
+      bidUserId: 0,
+    };
+  }
 }
