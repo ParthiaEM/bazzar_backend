@@ -9,6 +9,7 @@ import {
   Req,
   UseGuards,
   Put,
+  Query,
   Res,
 } from '@nestjs/common';
 import { IdeaService } from './idea.service';
@@ -57,8 +58,14 @@ export class IdeaController {
     //return this.ideaService.update(+id, updateIdeaDto, request.user);
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ideaService.remove(+id);
+  remove(
+    @Param('id') id: number,
+    @Req() request: RequestWithUser,
+    @Res() res: Response,
+  ) {
+    this.ideaService.remove(+id, request.user.userUniqueId);
+    return res.json({ delete: 'success' });
   }
 }

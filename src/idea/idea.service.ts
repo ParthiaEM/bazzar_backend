@@ -28,7 +28,10 @@ export class IdeaService {
     return user;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} idea`;
+  async remove(ideaId: number, postedUserId: number) {
+    return await this.IdeaRepository.delete({
+      ideaId,
+      postedUserId,
+    });
   }
 }

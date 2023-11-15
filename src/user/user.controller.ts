@@ -21,11 +21,9 @@ import { LoginUserDTO } from './dto/login-user.dto';
 import { Request, Response } from 'express';
 import RequestWithUser from '../auth/requestWithuser.interface';
 import JwtAuthenticationGuard from 'src/auth/jwt.auth.guard';
-import { JwtService } from '@nestjs/jwt';
 @Controller('user')
 export class UserController {
   constructor(
-    private readonly jwtService: JwtService,
     private readonly userService: UserService,
     private readonly authService: AuthService,
   ) {}
