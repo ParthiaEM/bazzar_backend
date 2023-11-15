@@ -12,6 +12,7 @@ export class CreateIdeaDto {
     bidUserId: number;
   };
   constructor() {
+    this.token = '';
     this.ideaInfo = {
       ideaId: 0,
       ideaField: '',
