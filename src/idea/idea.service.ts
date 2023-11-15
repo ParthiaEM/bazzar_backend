@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateIdeaDto } from './dto/update-idea.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Idea } from './entities/idea.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
+import { NotFoundError } from 'rxjs';
 @Injectable()
 export class IdeaService {
   constructor(
@@ -24,11 +25,20 @@ export class IdeaService {
   }
 
   async update(ideaId: number, updateIdeaDto: UpdateIdeaDto, user: User) {
-    let result = await this.IdeaRepository.findOne({ where: { ideaId } });
+    const { ideaName, ideaDetail, price } = updateIdeaDto.ideaInfo;
+
+    const result = await this.IdeaRepository.findOne({ where: { ideaId } });
+    if (!result) throw new NotFoundException();
+
     if (result.postedUserId == user.userUniqueId) {
-      await this.IdeaRepository.save(result);
+      result.ideaName = ideaName;
+      result.ideaDetail = ideaDetail;
+
+      return await this.IdeaRepository.save(result);
     }
-    return user;
+    result.price = price;
+
+    return await this.IdeaRepository.save(result);
   }
 
   async remove(ideaId: number, postedUserId: number) {

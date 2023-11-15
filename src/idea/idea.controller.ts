@@ -53,8 +53,10 @@ export class IdeaController {
     @Param('id') id: string,
     @Body() updateIdeaDto: UpdateIdeaDto,
     @Req() request: RequestWithUser,
+    @Res() res: Response,
   ) {
-    return await this.ideaService.update(+id, updateIdeaDto, request.user);
+    await this.ideaService.update(+id, updateIdeaDto, request.user);
+    res.json({ update: 'success' });
   }
 
   @UseGuards(JwtAuthenticationGuard)

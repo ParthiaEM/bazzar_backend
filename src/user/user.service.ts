@@ -45,6 +45,7 @@ export class UserService {
   async login(loginuserDTO: LoginUserDTO) {
     const userId = loginuserDTO.userId;
     const userData = await this.userRepository.findOne({ where: { userId } });
+    if (!userData) throw new NotFoundException();
     const { userPassword } = userData;
     if (!userData) return;
     const isPasswordMatch = await bcrypt.compare(
