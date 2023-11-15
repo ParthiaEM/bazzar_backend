@@ -23,8 +23,11 @@ export class IdeaService {
     return `This action returns a #${id} idea`;
   }
 
-  update(id: number, updateIdeaDto: UpdateIdeaDto, user: User) {
-    console.log(user);
+  async update(ideaId: number, updateIdeaDto: UpdateIdeaDto, user: User) {
+    let result = await this.IdeaRepository.findOne({ where: { ideaId } });
+    if (result.postedUserId == user.userUniqueId) {
+      await this.IdeaRepository.save(result);
+    }
     return user;
   }
 

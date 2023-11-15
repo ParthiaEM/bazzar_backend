@@ -10,6 +10,7 @@ export class CreateIdeaDto {
     postedUserId: number;
     purchasedUserId: number;
     bidUserId: number;
+    count: number;
   };
   constructor() {
     this.token = '';
@@ -23,6 +24,7 @@ export class CreateIdeaDto {
       postedUserId: 0,
       purchasedUserId: 0,
       bidUserId: 0,
+      count: 0,
     };
   }
 }

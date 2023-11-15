@@ -49,13 +49,12 @@ export class IdeaController {
 
   @UseGuards(JwtAuthenticationGuard)
   @Put(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateIdeaDto: UpdateIdeaDto,
     @Req() request: RequestWithUser,
   ) {
-    return console.log(request.user);
-    //return this.ideaService.update(+id, updateIdeaDto, request.user);
+    return await this.ideaService.update(+id, updateIdeaDto, request.user);
   }
 
   @UseGuards(JwtAuthenticationGuard)
