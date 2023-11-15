@@ -29,6 +29,7 @@ export class IdeaController {
     @Req() request: RequestWithUser,
     @Res() res: Response,
   ) {
+    console.log(createIdeaDto);
     createIdeaDto.ideaInfo.postedUserId = request.user.userUniqueId;
     this.ideaService.create(createIdeaDto.ideaInfo);
     return res.json({ create: 'success' });
