@@ -4,12 +4,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Idea } from './entities/idea.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
-import { NotFoundError } from 'rxjs';
+
 @Injectable()
 export class IdeaService {
   constructor(
     @InjectRepository(Idea)
     private readonly IdeaRepository: Repository<Idea>,
+    @InjectRepository(User)
+    private readonly UserRepository: Repository<User>,
   ) {}
 
   create(idea: Idea) {
@@ -20,8 +22,9 @@ export class IdeaService {
     return await this.IdeaRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} idea`;
+  async findOne(ideaId: number) {
+    const result = await this.IdeaRepository.findOne({ where: { ideaId } });
+    return result;
   }
 
   async update(ideaId: number, updateIdeaDto: UpdateIdeaDto, user: User) {
@@ -36,6 +39,9 @@ export class IdeaService {
 
       return await this.IdeaRepository.save(result);
     }
+    result.bidUserId = user.userUniqueId;
+    result.count += 1;
+    result.isTrading = true;
     result.price = price;
 
     return await this.IdeaRepository.save(result);

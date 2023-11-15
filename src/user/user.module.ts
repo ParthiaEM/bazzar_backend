@@ -28,7 +28,6 @@ import { JwtStrategy } from 'src/auth/jwt.strategy';
     }),
   ],
   controllers: [UserController],
-  exports: [UserService, JwtModule, PassportModule],
   providers: [
     UserService,
     AuthService,
@@ -36,5 +35,6 @@ import { JwtStrategy } from 'src/auth/jwt.strategy';
     LocalStrategy,
     JwtStrategy,
   ],
+  exports: [UserService, JwtModule, PassportModule],
 })
 export class UserModule {}

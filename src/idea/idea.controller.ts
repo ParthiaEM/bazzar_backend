@@ -37,8 +37,8 @@ export class IdeaController {
   }
   @HttpCode(200)
   @Get()
-  findAll() {
-    const result = this.ideaService.findAll();
+  async findAll() {
+    const result = await this.ideaService.findAll();
     return result;
   }
 
