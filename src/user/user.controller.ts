@@ -53,10 +53,9 @@ export class UserController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthenticationGuard)
   async findOne(@Param('id') id: number): Promise<User> {
     const user = await this.userService.findOne(+id);
-    user.userPassword = undefined;
+    delete user.userPassword;
     return user;
   }
 
