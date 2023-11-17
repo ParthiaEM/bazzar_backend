@@ -34,7 +34,7 @@ export class UserController {
       throw new ConflictException('UserId already exists');
     }
     await this.userService.create(createUserDto);
-    return res.status(HttpStatus.CREATED).json({ created: true });
+    return res.status(HttpStatus.CREATED).json({ create: true });
   }
 
   @HttpCode(200)
@@ -59,7 +59,6 @@ export class UserController {
     return user;
   }
 
-  @UseGuards(JwtAuthenticationGuard)
   @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
@@ -69,7 +68,7 @@ export class UserController {
   @Get()
   authenticate(@Req() request: RequestWithUser) {
     const user = request.user;
-    user.userPassword = undefined;
+    delete user.userPassword;
     return user;
   }
 }

@@ -27,6 +27,16 @@ export class IdeaService {
     return result;
   }
 
+  async endBid(ideaId: number) {
+    const result = await this.IdeaRepository.findOne({ where: { ideaId } });
+    if (!result) throw new NotFoundException('idea Not Found');
+    result.isTrading = false;
+    result.purchasedUserId = result.bidUserId;
+    result.bidUserId = 0;
+
+    return await this.IdeaRepository.save(result);
+  }
+
   async update(ideaId: number, updateIdeaDto: UpdateIdeaDto, user: User) {
     const { ideaName, ideaDetail, price } = updateIdeaDto.ideaInfo;
 

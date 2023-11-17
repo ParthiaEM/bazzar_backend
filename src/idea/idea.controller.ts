@@ -47,6 +47,12 @@ export class IdeaController {
     return this.ideaService.findOne(+id);
   }
 
+  @Get('/:id/end')
+  async endBid(@Param('id') id: number, @Res() res: Response) {
+    await this.ideaService.endBid(id);
+    return res.json({ end: 'success' });
+  }
+
   @UseGuards(JwtAuthenticationGuard)
   @Put(':id')
   async update(
