@@ -9,6 +9,7 @@ import {
   Req,
   UseGuards,
   Put,
+  Query,
   Res,
 } from '@nestjs/common';
 import { IdeaService } from './idea.service';
@@ -36,8 +37,8 @@ export class IdeaController {
   }
   @HttpCode(200)
   @Get()
-  findAll() {
-    const result = this.ideaService.findAll();
+  async findAll() {
+    const result = await this.ideaService.findAll();
     return result;
   }
 
@@ -46,19 +47,32 @@ export class IdeaController {
     return this.ideaService.findOne(+id);
   }
 
+  @Get('/:id/end')
+  async endBid(@Param('id') id: number, @Res() res: Response) {
+    await this.ideaService.endBid(id);
+    return res.json({ end: 'success' });
+  }
+
   @UseGuards(JwtAuthenticationGuard)
   @Put(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateIdeaDto: UpdateIdeaDto,
     @Req() request: RequestWithUser,
+    @Res() res: Response,
   ) {
-    return console.log(request.user);
-    //return this.ideaService.update(+id, updateIdeaDto, request.user);
+    await this.ideaService.update(+id, updateIdeaDto, request.user);
+    res.json({ update: 'success' });
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ideaService.remove(+id);
+  remove(
+    @Param('id') id: number,
+    @Req() request: RequestWithUser,
+    @Res() res: Response,
+  ) {
+    this.ideaService.remove(+id, request.user.userUniqueId);
+    return res.json({ delete: 'success' });
   }
 }

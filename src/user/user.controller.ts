@@ -21,11 +21,9 @@ import { LoginUserDTO } from './dto/login-user.dto';
 import { Request, Response } from 'express';
 import RequestWithUser from '../auth/requestWithuser.interface';
 import JwtAuthenticationGuard from 'src/auth/jwt.auth.guard';
-import { JwtService } from '@nestjs/jwt';
 @Controller('user')
 export class UserController {
   constructor(
-    private readonly jwtService: JwtService,
     private readonly userService: UserService,
     private readonly authService: AuthService,
   ) {}
@@ -36,7 +34,7 @@ export class UserController {
       throw new ConflictException('UserId already exists');
     }
     await this.userService.create(createUserDto);
-    return res.status(HttpStatus.CREATED).json({ created: true });
+    return res.status(HttpStatus.CREATED).json({ create: true });
   }
 
   @HttpCode(200)
@@ -55,14 +53,12 @@ export class UserController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthenticationGuard)
   async findOne(@Param('id') id: number): Promise<User> {
     const user = await this.userService.findOne(+id);
-    user.userPassword = undefined;
+    delete user.userPassword;
     return user;
   }
 
-  @UseGuards(JwtAuthenticationGuard)
   @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
@@ -72,7 +68,7 @@ export class UserController {
   @Get()
   authenticate(@Req() request: RequestWithUser) {
     const user = request.user;
-    user.userPassword = undefined;
+    delete user.userPassword;
     return user;
   }
 }

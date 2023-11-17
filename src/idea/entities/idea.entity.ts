@@ -27,4 +27,7 @@ export class Idea {
 
   @Column({ default: 0 })
   bidUserId: number;
+
+  @Column({ default: 0 })
+  count: number;
 }

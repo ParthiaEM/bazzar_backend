@@ -11,8 +11,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { LocalStrategy } from 'src/auth/local.strategy';
-import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/entities/user.entity';
+import { UserService } from 'src/user/user.service';
 
 @Module({
   imports: [
@@ -35,8 +35,8 @@ import { User } from 'src/user/entities/user.entity';
   providers: [
     IdeaService,
     AuthService,
-    JwtService,
     UserService,
+    JwtService,
     ConfigService,
     JwtStrategy,
     LocalStrategy,
