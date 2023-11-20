@@ -63,4 +63,9 @@ export class IdeaService {
       postedUserId,
     });
   }
+  async findPurchasedIdea(ideaId: number, purchasedUserId: number) {
+    return await this.IdeaRepository.findOne({
+      where: { ideaId, purchasedUserId },
+    });
+  }
 }

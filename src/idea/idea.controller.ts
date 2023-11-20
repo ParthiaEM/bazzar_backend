@@ -9,8 +9,8 @@ import {
   Req,
   UseGuards,
   Put,
-  Query,
   Res,
+  Query,
 } from '@nestjs/common';
 import { IdeaService } from './idea.service';
 import { CreateIdeaDto } from './dto/create-idea.dto';
@@ -51,6 +51,21 @@ export class IdeaController {
   async endBid(@Param('id') id: number, @Res() res: Response) {
     await this.ideaService.endBid(id);
     return res.json({ end: 'success' });
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('/buy/:id')
+  async findPurchased(
+    @Param('id') id: number,
+    @Req() req: RequestWithUser,
+    @Res() res: Response,
+  ) {
+    const result = await this.ideaService.findPurchasedIdea(
+      id,
+      req.user.userUniqueId,
+    );
+    if (!result) return res.json({ authorize: false });
+    return res.json({ authorize: true, result });
   }
 
   @UseGuards(JwtAuthenticationGuard)
