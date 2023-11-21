@@ -31,8 +31,14 @@ export class IdeaService {
     const result = await this.IdeaRepository.findOne({ where: { ideaId } });
     if (!result) throw new NotFoundException('idea Not Found');
     result.isTrading = false;
+
+    return await this.IdeaRepository.save(result);
+  }
+
+  async complete(ideaId: number) {
+    const result = await this.IdeaRepository.findOne({ where: { ideaId } });
+    if (result.purchasedUserId != 0) return;
     result.purchasedUserId = result.bidUserId;
-    result.bidUserId = 0;
 
     return await this.IdeaRepository.save(result);
   }

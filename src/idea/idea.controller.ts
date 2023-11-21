@@ -53,6 +53,12 @@ export class IdeaController {
     return res.json({ end: 'success' });
   }
 
+  @Get('/complete/:id')
+  async completeBid(@Param('id') id: number, @Res() res: Response) {
+    await this.ideaService.complete(id);
+    return res.json({ complete: 'success' });
+  }
+
   @UseGuards(JwtAuthenticationGuard)
   @Get('/buy/:id')
   async findPurchased(
