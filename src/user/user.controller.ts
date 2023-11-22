@@ -71,4 +71,14 @@ export class UserController {
     delete user.userPassword;
     return user;
   }
+
+  @Put('lux/:id')
+  manageLux(
+    @Body() updateUserDto: UpdateUserDto,
+    @Param('id') id: number,
+    @Res() res: Response,
+  ) {
+    this.userService.updateLux(id, updateUserDto);
+    return res.json({ lux: 'success' });
+  }
 }
