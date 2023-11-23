@@ -21,11 +21,13 @@ import { LoginUserDTO } from './dto/login-user.dto';
 import { Request, Response } from 'express';
 import RequestWithUser from '../auth/requestWithuser.interface';
 import JwtAuthenticationGuard from 'src/auth/jwt.auth.guard';
+import { IdeaService } from 'src/idea/idea.service';
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly authService: AuthService,
+    private readonly ideaService: IdeaService,
   ) {}
 
   @Post('/register')
@@ -59,6 +61,18 @@ export class UserController {
     return user;
   }
 
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('myBid/get')
+  async getMyInfo(@Req() req: RequestWithUser, @Res() res: Response) {
+    const bidInfo = await this.ideaService.findBid(req.user.userUniqueId);
+    console.log(bidInfo);
+    return res.json({
+      posted: bidInfo.posted,
+      bidding: bidInfo.biding,
+      purchased: bidInfo.posted,
+    });
+  }
+
   @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
@@ -66,9 +80,19 @@ export class UserController {
 
   @UseGuards(JwtAuthenticationGuard)
   @Get()
-  authenticate(@Req() request: RequestWithUser) {
-    const user = request.user;
+  authenticate(@Req() req: RequestWithUser) {
+    const user = req.user;
     delete user.userPassword;
     return user;
+  }
+
+  @Put('lux/:id')
+  manageLux(
+    @Body() updateUserDto: UpdateUserDto,
+    @Param('id') id: number,
+    @Res() res: Response,
+  ) {
+    this.userService.updateLux(id, updateUserDto);
+    return res.json({ lux: 'success' });
   }
 }

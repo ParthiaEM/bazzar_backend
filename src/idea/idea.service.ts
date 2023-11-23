@@ -74,4 +74,16 @@ export class IdeaService {
       where: { ideaId, purchasedUserId },
     });
   }
+  async findBid(userId) {
+    const purchased = await this.IdeaRepository.find({
+      where: { purchasedUserId: userId },
+    });
+    const biding = await this.IdeaRepository.find({
+      where: { bidUserId: userId },
+    });
+    const posted = await this.IdeaRepository.find({
+      where: { purchasedUserId: userId },
+    });
+    return { purchased, biding, posted };
+  }
 }

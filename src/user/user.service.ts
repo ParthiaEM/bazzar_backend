@@ -41,6 +41,11 @@ export class UserService {
   async update(id: number, updateUserDto: UpdateUserDto) {
     return await this.userRepository.update(id, updateUserDto);
   }
+  async updateLux(userUniqueId: number, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOne({ where: { userUniqueId } });
+    user.lux += updateUserDto.lux;
+    return await this.userRepository.update(userUniqueId, user);
+  }
 
   async login(loginuserDTO: LoginUserDTO) {
     const userId = loginuserDTO.userId;
