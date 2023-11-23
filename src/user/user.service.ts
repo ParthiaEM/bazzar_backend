@@ -67,5 +67,4 @@ export class UserService {
   async getById(userUniqueId: number) {
     return await this.userRepository.findOne({ where: { userUniqueId } });
   }
-  async;
 }
