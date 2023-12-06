@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -39,6 +40,12 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
+    if (updateUserDto.userId) {
+      const userCheck = await this.userRepository.findOne({
+        where: { userId: updateUserDto.userId },
+      });
+      if (userCheck) throw new ConflictException();
+    }
     return await this.userRepository.update(id, updateUserDto);
   }
   async updateLux(userUniqueId: number, updateUserDto: UpdateUserDto) {
