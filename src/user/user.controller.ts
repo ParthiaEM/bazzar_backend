@@ -74,8 +74,13 @@ export class UserController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Res() res: Response,
+  ) {
+    await this.userService.update(+id, updateUserDto);
+    return res.json({ update: 'success' });
   }
 
   @UseGuards(JwtAuthenticationGuard)

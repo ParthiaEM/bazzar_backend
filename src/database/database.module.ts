@@ -8,7 +8,8 @@ import { Idea } from 'src/idea/entities/idea.entity';
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DATABASE_HOST,
-      port: 32696,
+      port: 3306,
+      //port: 32696,
       username: process.env.DATABASE_NAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_DB,
